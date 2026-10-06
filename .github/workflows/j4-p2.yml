@@ -1,0 +1,47 @@
+name: J4 P2 bounded verification
+on:
+  push:
+    branches: ['j4/p2-*']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: postgresql://postgres:practice@localhost:5432/conduit
+      JWT_SECRET: practice-only-not-a-credential
+      NX_DAEMON: 'false'
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: practice
+          POSTGRES_DB: conduit
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U postgres" --health-interval=5s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci --no-audit --no-fund
+      - run: npx prisma generate && npx prisma migrate deploy
+      - name: Project tests
+        run: npx jest --runInBand --json --outputFile=project-tests.json
+      - name: Build, boot and characterize
+        run: |
+          npx tsc --noEmit -p tsconfig.app.json
+          npx ts-node --transpile-only --compiler-options '{"module":"CommonJS"}' src/main.ts > boot.log 2>&1 &
+          python3 j4_probe.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence
+          path: |
+            surface.actual.json
+            project-tests.*
+            boot.log
+            routes.txt
+          retention-days: 30
