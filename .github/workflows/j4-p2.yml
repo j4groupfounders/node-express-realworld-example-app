@@ -26,7 +26,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - run: npm ci --no-audit --no-fund
       - run: npx prisma generate && npx prisma migrate deploy
       - name: Project tests
@@ -34,13 +33,19 @@ jobs:
       - name: Build, boot and characterize
         run: |
           npx tsc --noEmit -p tsconfig.app.json
-          npx ts-node --transpile-only --compiler-options '{"module":"CommonJS"}' src/main.ts > boot.log 2>&1 &
+          setsid npx ts-node --transpile-only --compiler-options '{"module":"CommonJS"}' src/main.ts > boot.log 2>&1 &
+          server=$!
+          trap 'kill -- -"$server" || true' EXIT
           python3 j4_probe.py
+      - name: Five independent seeded route faults
+        run: python3 j4_seeds.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: evidence
           path: |
+            seed-results.json
+            seed-evidence/
             package-lock.json
             surface.actual.json
             project-tests.*
