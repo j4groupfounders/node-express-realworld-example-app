@@ -26,6 +26,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - run: npm ci --no-audit --no-fund
       - run: npx prisma generate && npx prisma migrate deploy
       - name: Project tests
@@ -40,6 +41,7 @@ jobs:
         with:
           name: evidence
           path: |
+            package-lock.json
             surface.actual.json
             project-tests.*
             boot.log
