@@ -29,7 +29,7 @@ router.post('/users', async (req: Request, res: Response, next: NextFunction) =>
  */
 router.post('/users/login', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await login(req.body.user);
+    const user = await login(req.body.user || {});
     res.json({ user });
   } catch (error) {
     next(error);
