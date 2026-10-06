@@ -1,0 +1,50 @@
+[
+  {
+    "method": "GET",
+    "path": "/",
+    "status": 200,
+    "content_type": "application/json",
+    "sha256": "566445dff9d385e26024f044725d437716a5608baa71c40574bff4b6ef4b44bd",
+    "body": "{\"status\":\"API is running on /api\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/tags",
+    "status": 200,
+    "content_type": "application/json",
+    "sha256": "b35b1ec1c0c72c4bbd16bd9d6c2cbcac8224272cd7e6ecf504a78f2c7e989b2a",
+    "body": "{\"tags\":[]}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/articles",
+    "status": 200,
+    "content_type": "application/json",
+    "sha256": "e16a3d4e4f6788f0dfbcac33119bf66c17e4a5f59728e79d4c4f30ddfea7ea50",
+    "body": "{\"articles\":[],\"articlesCount\":0}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/user",
+    "status": 401,
+    "content_type": "application/json",
+    "sha256": "f3b1c0789e75ebbc0876becee5b8d6ebec93ccaf975e6f2640d737db43725114",
+    "body": "{\"message\":\"missing authorization credentials\",\"status\":\"error\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/j4-missing",
+    "status": 404,
+    "content_type": "text/html",
+    "sha256": "223680e0e65972ae36b1c7940084f0fcf407fe323d2f2f09a262ea250070330a",
+    "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /j4-missing</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "POST",
+    "path": "/api/users/login",
+    "status": 422,
+    "content_type": "application/json",
+    "sha256": "435dcabf7759444706d6c60f015f3d230e1f31edbf9764bd1914df872661d2d3",
+    "body": "{\"errors\":{\"email\":[\"can't be blank\"]}}"
+  }
+]
